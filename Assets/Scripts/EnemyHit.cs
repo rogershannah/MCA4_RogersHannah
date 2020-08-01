@@ -6,20 +6,9 @@ public class EnemyHit : MonoBehaviour
 {
     public GameObject particleFX;
     public AudioClip hitSFX;
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("AttackSpell") || other.CompareTag("CeilingProb"))
+        if (other.CompareTag("AttackSpell"))
         {
             AudioSource.PlayClipAtPoint(hitSFX, transform.position);
             DestroyEnemny();

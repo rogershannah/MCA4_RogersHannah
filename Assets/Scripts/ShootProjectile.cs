@@ -55,7 +55,7 @@ public class ShootProjectile : MonoBehaviour
                 reticleImage.color = Color.Lerp(reticleImage.color, reticleAttackColor, Time.deltaTime * 2);
                 reticleImage.transform.localScale = Vector3.Lerp(reticleImage.transform.localScale, new Vector3(0.7f, .7f, 1), Time.deltaTime * reticleFocusSpeed);
             }
-            else if (hit.collider.CompareTag("Interactable") || hit.collider.CompareTag("CeilingProb"))
+            else if (hit.collider.CompareTag("Interactable"))
             {
                 currentProjectilePrefab = breakPrefab;
                 reticleImage.color = Color.Lerp(reticleImage.color, reticleBreakColor, Time.deltaTime * 2);

@@ -11,7 +11,8 @@ TagManager:
   - BreakSpell
   - Canvas
   - Pickup
-  - CeilingProb
+  - WanderPoint
+  - SwordTip
   layers:
   - Default
   - TransparentFX
