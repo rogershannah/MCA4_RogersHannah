@@ -11,26 +11,34 @@ public class EnemyAI : MonoBehaviour
     }
 
     public FSMStates currentState;
-    public float enemySpeed = 5;
+    public float enemySpeed = 3.5f;
+    public float chaseSpeed = 7;
     public float chaseDistance = 10;
-    public float attackDistance = 5;
+    public float attackDistance = 3;
     public GameObject player;
-    public GameObject[] spellProjectiles;
+    //public GameObject[] spellProjectiles;
     public GameObject swordTip;
     public float shootRate = 2;
     public GameObject deadVFX;
+    public Transform enemyEyes;
+    public float fieldOfView = 45f;
 
-    GameObject[] wanderPoints;
+    public int minDamage = 5;
+    public int maxDamage = 15;
+
+
+
+    public GameObject[] wanderPoints;
     Animator anim;
     Vector3 nextDestination;
     int curDestIndex = 0;
     float distanceToPlayer;
     float elapsedTime;
-    UnityEngine.AI.NavMeshAgent agent;
 
-    //EnemyHealth enemyHealth;
+    EnemyHealth enemyHealth;
     int health;
     Transform deadTransform;
+    NavMeshAgent agent;
 
     bool isDead;
     void Start()
@@ -38,12 +46,12 @@ public class EnemyAI : MonoBehaviour
         Initialize();
     }
 
+    // Update is called once per frame
     void Update()
     {
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
-        //health = enemyHealth.currentHealth;
-        health = 100;
+        health = enemyHealth.currentHealth;
 
         switch (currentState)
         {
@@ -71,9 +79,14 @@ public class EnemyAI : MonoBehaviour
 
     void Initialize()
     {
+
         agent = GetComponent<NavMeshAgent>();
 
-        wanderPoints = GameObject.FindGameObjectsWithTag("WanderPoint");
+        if(wanderPoints == null || wanderPoints.Length == 0)
+        {
+            wanderPoints = GameObject.FindGameObjectsWithTag("WanderPoint");
+        }
+
         anim = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player");
         swordTip = GameObject.FindGameObjectWithTag("SwordTip");
@@ -81,27 +94,28 @@ public class EnemyAI : MonoBehaviour
         currentState = FSMStates.Patrol;
         FindNextPoint();
 
-        //enemyHealth = GetComponent<EnemyHealth>();
-        //health = enemyHealth.currentHealth;
+        enemyHealth = GetComponent<EnemyHealth>();
+        health = enemyHealth.currentHealth;
         isDead = false;
     }
-
     void UpdatePatrolState()
     {
         anim.SetInteger("animState", 1);
 
-        if (Vector3.Distance(transform.position, nextDestination) < 10)
+        agent.stoppingDistance = 0;
+        agent.speed = enemySpeed;
+
+        if (Vector3.Distance(transform.position, nextDestination) < 2)
         {
-            Debug.Log("hello");
             FindNextPoint();
         }
         else if (distanceToPlayer <= chaseDistance)
         {
             currentState = FSMStates.Chase;
         }
+
         FaceTarget(nextDestination);
         agent.SetDestination(nextDestination);
-        //transform.position = Vector3.Towards(transform.position, nextDestination, enemySpeed * Time.deltaTime);
     }
 
     void UpdateChaseState()
@@ -110,17 +124,21 @@ public class EnemyAI : MonoBehaviour
 
         nextDestination = player.transform.position;
 
-        if (distanceToPlayer <= attackDistance)
+        agent.stoppingDistance = attackDistance;
+        agent.speed = chaseSpeed;
+
+        if (IsPlayerInClearFOV())
         {
             currentState = FSMStates.Attack;
         }
         else if (distanceToPlayer > chaseDistance)
         {
+            FindNextPoint();
             currentState = FSMStates.Patrol;
         }
+
         FaceTarget(nextDestination);
         agent.SetDestination(nextDestination);
-        //transform.position = Vector3.MoveTowards(transform.position, nextDestination, enemySpeed * Time.deltaTime);
     }
 
     void UpdateAttackState()
@@ -143,8 +161,9 @@ public class EnemyAI : MonoBehaviour
         }
         FaceTarget(nextDestination);
 
-        //enemy swings sword
-        //EnemySpellCast();
+        //enemy shoot projectile at player
+        // EnemySpellCast();
+        EnemyAttack();
     }
 
     void UpdateDeadState()
@@ -165,6 +184,8 @@ public class EnemyAI : MonoBehaviour
     {
         curDestIndex = (curDestIndex + 1) % wanderPoints.Length;
         nextDestination = wanderPoints[curDestIndex].transform.position;
+
+        agent.SetDestination(nextDestination);
     }
 
     void FaceTarget(Vector3 target)
@@ -175,27 +196,34 @@ public class EnemyAI : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10 * Time.deltaTime);
     }
 
-    void EnemySpellCast()
+    //void EnemySpellCast()
+    void EnemyAttack()
     {
         if (!isDead)
         {
             if (elapsedTime >= shootRate)
             {
                 var animDuration = anim.GetCurrentAnimatorStateInfo(0).length;
-                Invoke("SpellCasting", animDuration);
+                //Invoke("SpellCasting", animDuration);
+                Invoke("SwordAttack", animDuration);
                 elapsedTime = 0.0f;
             }
 
         }
     }
 
-    void SpellCasting()
+    /*void SpellCasting()
     {
         int randomIndex = Random.Range(0, spellProjectiles.Length);
         GameObject spellProjectile = spellProjectiles[randomIndex];
 
-
         Instantiate(spellProjectile, swordTip.transform.position, swordTip.transform.rotation);
+    }*/
+    void SwordAttack()
+    {
+        PlayerHealth ph = player.GetComponent<PlayerHealth>();
+        int damage = Random.Range(minDamage, maxDamage);
+        ph.TakeDamage(damage);
     }
 
     private void OnDrawGizmos()
@@ -207,5 +235,40 @@ public class EnemyAI : MonoBehaviour
         //chase
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, chaseDistance);
+
+        //fov rays
+        Vector3 frontRayPoint = enemyEyes.position + (enemyEyes.forward * chaseDistance);
+        Vector3 leftRayPoint = Quaternion.Euler(0, fieldOfView * 0.5f, 0) * frontRayPoint;
+        Vector3 rightRayPoint = Quaternion.Euler(0, -fieldOfView * 0.5f, 0) * frontRayPoint;
+    }
+
+    bool IsPlayerInClearFOV()
+    {
+        RaycastHit hit;
+        Vector3 directionToPlayer = player.transform.position - enemyEyes.position;
+
+        if (Vector3.Angle(directionToPlayer, enemyEyes.forward) <= fieldOfView)
+        {
+            if (Physics.Raycast(enemyEyes.position, directionToPlayer, out hit, chaseDistance))
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    print("Player in sight!");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
 }
