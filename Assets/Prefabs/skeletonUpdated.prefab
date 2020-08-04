@@ -816,9 +816,7 @@ MonoBehaviour:
   fieldOfView: 45
   minDamage: 5
   maxDamage: 15
-  wanderPoints:
-  - {fileID: 0}
-  - {fileID: 0}
+  wanderPoints: []
 --- !u!195 &259235202
 NavMeshAgent:
   m_ObjectHideFlags: 0

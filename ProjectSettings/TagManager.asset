@@ -13,6 +13,7 @@ TagManager:
   - Pickup
   - WanderPoint
   - SwordTip
+  - DynamicPlatform
   layers:
   - Default
   - TransparentFX

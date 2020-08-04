@@ -23,7 +23,7 @@ public class EnemyBehavior : MonoBehaviour
     void Update()
     {
 
-       /* if (!LevelManager.isGameOver)
+        if (!LevelManager.isGameOver)
         {
             float step = moveSpeed * Time.deltaTime;
 
@@ -34,7 +34,7 @@ public class EnemyBehavior : MonoBehaviour
                 transform.LookAt(player);
                 transform.position = Vector3.MoveTowards(transform.position, player.position, step);
             }
-        }*/
+        }
     }
 
     private void OnTriggerEnter(Collider other)

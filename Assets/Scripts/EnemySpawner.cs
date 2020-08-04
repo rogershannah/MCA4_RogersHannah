@@ -6,16 +6,11 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
-    public int spawnTime = 5;
+    public int spawnInitTime = 5;
+    public int spawnRepeatTime = 8;
     void Start()
     {
-        InvokeRepeating("SpawnEnemies", spawnTime, spawnTime);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        InvokeRepeating("SpawnEnemies", spawnInitTime, spawnRepeatTime);
     }
 
     void SpawnEnemies()

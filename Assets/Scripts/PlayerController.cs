@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     public float gravity = 9.81f;
     public float airControl = 2f;
 
+    public Vector3 externalMoveSpeed;
+
     CharacterController controller;
     Vector3 input, moveDirection;
     void Start()
@@ -22,10 +24,6 @@ public class PlayerController : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
-        //global, won't work:
-        //input = new Vector3(moveHorizontal, 0, moveVertical);
-
-        //local:
         input = (transform.right * moveHorizontal + transform.forward * moveVertical).normalized;
 
         input *= moveSpeed;
@@ -49,9 +47,31 @@ public class PlayerController : MonoBehaviour
 
         moveDirection.y -= gravity * Time.deltaTime;
 
+        
         if (!LevelManager.isGameOver)
         {
+            if(transform.parent != null)
+            {
+                Vector3 offset = transform.parent.position - transform.position;
+                controller.Move(moveDirection * Time.deltaTime + offset * Time.deltaTime);
+            }
             controller.Move(moveDirection * Time.deltaTime);
+        }
+    }
+
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("DynamicPlatform"))
+        {
+            transform.parent = other.gameObject.transform;
+        }
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("DynamicPlatform"))
+        {
+            transform.parent = null;
         }
     }
 }
