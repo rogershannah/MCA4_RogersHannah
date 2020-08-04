@@ -18,9 +18,9 @@ public class InteractableBehavior : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision hit)
     {
-        if (other.gameObject.CompareTag("BreakSpell"))
+        if (hit.gameObject.CompareTag("BreakSpell"))
         {
             if(gameObject.GetComponent<Rigidbody>() == null)
             {

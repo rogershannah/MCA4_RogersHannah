@@ -253,7 +253,6 @@ public class EnemyAI : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    print("Player in sight!");
                     return true;
                 }
                 else

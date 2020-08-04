@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class EnemyHealth : MonoBehaviour
 {
     public int startingHealth = 100;
-    public AudioClip deadSFX;
+    public AudioClip hitSFX;
     public static bool isDead = false;
     public Slider healthSlider;
 
@@ -25,6 +25,7 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int damageAmount)
     {
+        AudioSource.PlayClipAtPoint(hitSFX, transform.position);
         if (currentHealth > 0)
         {
             currentHealth -= damageAmount;
@@ -36,17 +37,9 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    void PlayerDies()
-    {
-        isDead = true;
-        Debug.Log("Player is dead...");
-        AudioSource.PlayClipAtPoint(deadSFX, transform.position);
-        transform.Rotate(-90, 0, 0, Space.Self);
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Projectile"))
+        if (collision.gameObject.CompareTag("AttackSpell"))
         {
             TakeDamage(10);
         }

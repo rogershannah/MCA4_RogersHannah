@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 3464032550416377328}
   - component: {fileID: 3464032550412952982}
   - component: {fileID: 3464032550413952982}
-  - component: {fileID: 271978563247673256}
   - component: {fileID: 594169337}
+  - component: {fileID: 4234942745426046736}
+  - component: {fileID: 1651879074}
   m_Layer: 0
   m_Name: PendulumRack_snaps010
   m_TagString: Interactable
@@ -84,20 +85,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &271978563247673256
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3464032550416218512}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 38b92a2dae5db2841943032fdf0c9311, type: 2}
 --- !u!114 &594169337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,6 +98,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitSpeed: 10
+--- !u!65 &4234942745426046736
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3464032550416218512}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.5503912, y: 3.6950579, z: 2.07261}
+  m_Center: {x: -0.014306366, y: 1.8437884, z: 0.01908642}
+--- !u!65 &1651879074
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3464032550416218512}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.5503912, y: 3.6950579, z: 2.07261}
+  m_Center: {x: -0.014306366, y: 1.8437884, z: 0.01908642}
 --- !u!1 &3464032550416218518
 GameObject:
   m_ObjectHideFlags: 0
@@ -1707,10 +1720,10 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3464032550416218518}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!1 &3464032550416218620
@@ -5466,6 +5479,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
